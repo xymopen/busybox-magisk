@@ -28,10 +28,10 @@ SKIPMOUNT=false
 PROPFILE=false
 
 # Set to true if you need post-fs-data script
-POSTFSDATA=false
+POSTFSDATA=true
 
 # Set to true if you need late_start service script
-LATESTARTSERVICE=false
+LATESTARTSERVICE=true
 
 ##########################################################################################
 # Replace list
@@ -123,7 +123,7 @@ REPLACE="
 
 print_modname() {
   ui_print "*******************************"
-  ui_print "     Magisk Module Template    "
+  ui_print "       Busybox of Magisk       "
   ui_print "*******************************"
 }
 
@@ -132,8 +132,8 @@ print_modname() {
 on_install() {
   # The following is the default implementation: extract $ZIPFILE/system to $MODPATH
   # Extend/change the logic to whatever you want
-  ui_print "- Extracting module files"
-  unzip -o "$ZIPFILE" 'system/*' -d $MODPATH >&2
+  ui_print "- Making a dummy magic mount point"
+  mkdir "$MODDIR/system" >&2
 }
 
 # Only some special files require specific permissions

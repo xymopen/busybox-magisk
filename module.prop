@@ -1,6 +1,6 @@
-id=template
-name=Template Module
-version=v1
-versionCode=1
-author=topjohnwu
-description=A short description
+id=busybox-magisk
+name=Busybox of Magisk
+version=v1.4
+versionCode=6
+author=xymopen
+description=Expose Magisk's internal busybox
