@@ -1,6 +1,6 @@
 id=busybox-magisk
 name=Busybox of Magisk
-version=v1.4
-versionCode=6
+version=v1.5
+versionCode=7
 author=xymopen
 description=Expose Magisk's internal busybox

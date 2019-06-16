@@ -15,34 +15,29 @@ BB="$(which busybox)"
 
 "$BB" mkdir -p "$MODDIR/system"
 "$BB" rm -rf "$MODDIR/system/*"
+"$BB" mkdir -p "$MODDIR/system/bin"
 
 ln_bb() {
   local applet="$("$BB" basename "$1")"
   local basedir="$("$BB" dirname "$1")"
   local applet_path
 
-  if [ ! \( -f "/$basedir/$applet" -o -f "/system/$basedir/$applet" \) ]; then
+  if [ ! \( \
+    -x "/$basedir/$applet" -o \
+    -x "/system/$basedir/$applet" -o \
+    -x "/system/bin/$applet" \
+  \) ]; then
     # Some devices don't have directories like /system/sbin and
     # let Magisk "magic mount" them may cause stuck on boot
-    # So we use rootfs as a backup
-    if [ -d "/$basedir" ]; then
-      applet_path="/$basedir/$applet"
+    # So we install applets to /system/bin
 
-      "$BB" ln -s "$BB" "$applet_path"
-      chcon -Rh 'u:object_r:rootfs:s0' "$applet_path"
-    elif [ -d "/system/$basedir" ]; then
-      applet_path="$MODDIR/system/$basedir/$applet"
+    applet_path="$MODDIR/system/bin/$applet"
 
-      "$BB" mkdir -p "$BB" "$MODDIR/system/$basedir"
-      "$BB" ln -s "$BB" "$applet_path"
-      chcon -Rh 'u:object_r:system_file:s0' "$applet_path"
-    fi
-
-    if [ -n "$applet_path" ]; then
-      "$BB" chown -Rfh 0 "$applet_path"
-      "$BB" chgrp -Rfh 0 "$applet_path"
-      "$BB" chmod -Rf 755 "$applet_path"
-    fi
+    "$BB" ln -s "$BB" "$applet_path"
+    chcon -Rh 'u:object_r:system_file:s0' "$applet_path"
+    "$BB" chown -Rfh 0 "$applet_path"
+    "$BB" chgrp -Rfh 0 "$applet_path"
+    "$BB" chmod -Rf 755 "$applet_path"
   fi
 }
 
