@@ -13,8 +13,6 @@ MODDIR=${0%/*}
 
 BB="$(which busybox)"
 
-"$BB" mount -t tmpfs tmpfs "$MODDIR/system"
-
 ln_bb() {
   local applet="$("$BB" basename "$1")"
   local basedir="$("$BB" dirname "$1")"
