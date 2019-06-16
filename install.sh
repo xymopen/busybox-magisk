@@ -39,17 +39,6 @@ LATESTARTSERVICE=false
 
 # List all directories you want to directly replace in the system
 # Check the documentations for more info why you would need this
-
-# Construct your list in the following format
-# This is an example
-REPLACE_EXAMPLE="
-/system/app/Youtube
-/system/priv-app/SystemUI
-/system/priv-app/Settings
-/system/framework
-"
-
-# Construct your own list here
 REPLACE="
 "
 
@@ -130,10 +119,8 @@ print_modname() {
 # Copy/extract your module files into $MODPATH in on_install.
 
 on_install() {
-  # The following is the default implementation: extract $ZIPFILE/system to $MODPATH
   # Extend/change the logic to whatever you want
-  ui_print "- Making a dummy magic mount point"
-  mkdir "$MODDIR/system" >&2
+  :
 }
 
 # Only some special files require specific permissions

@@ -13,6 +13,9 @@ MODDIR=${0%/*}
 
 BB="$(which busybox)"
 
+"$BB" mkdir -p "$MODDIR/system"
+"$BB" rm -rf "$MODDIR/system/*"
+
 ln_bb() {
   local applet="$("$BB" basename "$1")"
   local basedir="$("$BB" dirname "$1")"
