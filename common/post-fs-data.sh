@@ -11,12 +11,12 @@ MODDIR=${0%/*}
 # exec >"/cache/busybox_magisk.log"
 # exec 2>&1
 
+LAST_BBPATH="$MODDIR/bb.txt"
+LAST_APPLETS_PATH="$MODDIR/applets.txt"
+
 BB="$(which busybox)"
 BBPATH="$(dirname "$BB")"
-
-mkdir -p "$MODDIR/system"
-rm -rf "$MODDIR/system/*"
-mkdir -p "$MODDIR/system/bin"
+APPLETS=$("$BB" --list)
 
 which_not_busybox() {
   local IFS=':'
@@ -52,10 +52,23 @@ ln_bb() {
   chcon -Rh 'u:object_r:system_file:s0' "$applet_path"
 }
 
-ln_bb 'bin/busybox'
+if [ \(											                  		\
+  "$BB" != "$(cat "$LAST_BBPATH")" -o        	\
+  "$APPLETS" != "$(cat "$LAST_APPLETS_PATH")" \
+\) ]; then
+  echo "$BB" > "$LAST_BBPATH"
+  echo "$APPLETS" > "$LAST_APPLETS_PATH"
 
-for applet in $("$BB" --list); do
-  if ! which_not_busybox "$applet" > /dev/null; then
-    ln_bb "$applet"
-  fi
-done
+  # Shell script runs in non-interactive mode
+  # in which extglob is not enabled
+  rm -rf "$MODDIR/system/bin"
+  mkdir -p "$MODDIR/system/bin"
+
+  ln_bb 'busybox'
+
+  for applet in $APPLETS; do
+    if ! which_not_busybox "$applet" > /dev/null; then
+      ln_bb "$applet"
+    fi
+  done
+fi
