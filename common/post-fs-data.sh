@@ -13,13 +13,13 @@ MODDIR=${0%/*}
 
 BB="$(which busybox)"
 
-"$BB" mkdir -p "$MODDIR/system"
-"$BB" rm -rf "$MODDIR/system/*"
-"$BB" mkdir -p "$MODDIR/system/bin"
+mkdir -p "$MODDIR/system"
+rm -rf "$MODDIR/system/*"
+mkdir -p "$MODDIR/system/bin"
 
 ln_bb() {
-  local applet="$("$BB" basename "$1")"
-  local basedir="$("$BB" dirname "$1")"
+  local applet="$(basename "$1")"
+  local basedir="$(dirname "$1")"
   local applet_path
 
   if [ ! \( \
@@ -33,11 +33,11 @@ ln_bb() {
 
     applet_path="$MODDIR/system/bin/$applet"
 
-    "$BB" ln -s "$BB" "$applet_path"
+    ln -s "$BB" "$applet_path"
     chcon -Rh 'u:object_r:system_file:s0' "$applet_path"
-    "$BB" chown -Rfh 0 "$applet_path"
-    "$BB" chgrp -Rfh 0 "$applet_path"
-    "$BB" chmod -Rf 755 "$applet_path"
+    chown -Rfh 0 "$applet_path"
+    chgrp -Rfh 0 "$applet_path"
+    chmod -Rf 755 "$applet_path"
   fi
 }
 
