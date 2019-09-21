@@ -120,7 +120,9 @@ print_modname() {
 
 on_install() {
   # Extend/change the logic to whatever you want
-  :
+  ui_print "- Unflagging installed"
+  touch "$MODPATH/bb.txt"
+  touch "$MODPATH/applets.txt"
 }
 
 # Only some special files require specific permissions
