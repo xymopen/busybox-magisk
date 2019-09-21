@@ -46,10 +46,10 @@ ln_bb() {
 
   ln -s "$BB" "$applet_path"
 
-  chmod -Rf 755 "$applet_path"
-  chown -Rfh 0 "$applet_path"
-  chgrp -Rfh 0 "$applet_path"
-  chcon -Rh 'u:object_r:system_file:s0' "$applet_path"
+  chmod -f 755 "$applet_path"
+  chown -fh 0 "$applet_path"
+  chgrp -fh 0 "$applet_path"
+  chcon -h 'u:object_r:system_file:s0' "$applet_path"
 }
 
 if [ \(											                  		\
