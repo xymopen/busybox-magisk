@@ -18,6 +18,14 @@ BB="$(which busybox)"
 BBPATH="$(dirname "$BB")"
 APPLETS=$("$BB" --list)
 
+# Follow [busybox-ndk](https://github.com/Magisk-Modules-Repo/busybox-ndk
+# "Magisk-Modules-Repo/busybox-ndk: busybox-ndk")
+if [ -d "/system/xbin" ]; then
+  BIN="xbin"
+else
+  BIN="bin"
+fi
+
 which_not_busybox() {
   local IFS=':'
 
@@ -39,10 +47,10 @@ which_not_busybox() {
 ln_bb() {
   # Some devices don't have directories like /system/sbin and
   # let Magisk "magic mount" them may cause stuck on boot
-  # So we install applets to /system/bin
+  # So we install applets to /system/(x)bin
 
   local applet="$1"
-  local applet_path="$MODDIR/system/bin/$applet"
+  local applet_path="$MODDIR/system/$BIN/$applet"
 
   ln -s "$BB" "$applet_path"
 
@@ -61,8 +69,8 @@ if [ \(											                  		\
 
   # Shell script runs in non-interactive mode
   # in which extglob is not enabled
-  rm -rf "$MODDIR/system/bin"
-  mkdir -p "$MODDIR/system/bin"
+  rm -rf "$MODDIR/system/$BIN"
+  mkdir -p "$MODDIR/system/$BIN"
 
   ln_bb 'busybox'
 
