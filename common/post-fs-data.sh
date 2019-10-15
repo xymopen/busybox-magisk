@@ -1,18 +1,18 @@
 #!/system/bin/sh
 # Do NOT assume where your module will be located.
-# ALWAYS use $MODDIR if you need to know where this script
+# ALWAYS use $MODPATH if you need to know where this script
 # and module is placed.
 # This will make sure your module will still work
 # if Magisk change its mount point in the future
-MODDIR=${0%/*}
+MODPATH=${0%/*}
 
 # This script will be executed in post-fs-data mode
 
 # exec >"/cache/busybox_magisk.log"
 # exec 2>&1
 
-LAST_BBPATH="$MODDIR/bb.txt"
-LAST_APPLETS_PATH="$MODDIR/applets.txt"
+LAST_BBPATH="$MODPATH/bb.txt"
+LAST_APPLETS_PATH="$MODPATH/applets.txt"
 
 BB="$(which busybox)"
 BBPATH="$(dirname "$BB")"
@@ -50,7 +50,7 @@ ln_bb() {
   # So we install applets to /system/(x)bin
 
   local applet="$1"
-  local applet_path="$MODDIR/system/$BIN/$applet"
+  local applet_path="$MODPATH/system/$BIN/$applet"
 
   ln -s "$BB" "$applet_path"
 
@@ -69,8 +69,8 @@ if [ \(											                  		\
 
   # Shell script runs in non-interactive mode
   # in which extglob is not enabled
-  rm -rf "$MODDIR/system/$BIN"
-  mkdir -p "$MODDIR/system/$BIN"
+  rm -rf "$MODPATH/system/$BIN"
+  mkdir -p "$MODPATH/system/$BIN"
 
   ln_bb 'busybox'
 
