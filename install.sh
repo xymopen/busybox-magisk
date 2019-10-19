@@ -28,7 +28,7 @@ SKIPMOUNT=false
 PROPFILE=false
 
 # Set to true if you need post-fs-data script
-POSTFSDATA=false
+POSTFSDATA=true
 
 # Set to true if you need late_start service script
 LATESTARTSERVICE=true
@@ -125,7 +125,9 @@ on_install() {
   local applets="busybox $(busybox --list)"
 
   ui_print "- Installing applets to /system/$BIN"
-  mkdir -p "$MODPATH/system/$BIN"
+  # Delete previous pending update
+  rm -rf "$MODPATH/updated/$BIN"
+  mkdir -p "$MODPATH/updated/$BIN"
 
   for applet in $applets; do
     if grep -qse "^\-${applet}$" "$CONFIGFILE"; then
@@ -204,7 +206,7 @@ ln_bb() {
   # So we install applets to /system/(x)bin
 
   local applet="$1"
-  local applet_path="$MODPATH/system/$BIN/$applet"
+  local applet_path="$MODPATH/updated/$BIN/$applet"
 
   ln -s "/data/local/tmp/busybox" "$applet_path"
 

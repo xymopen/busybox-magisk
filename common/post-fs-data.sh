@@ -10,3 +10,10 @@ MODPATH=${0%/*}
 
 # exec >"/cache/busybox_magisk.log"
 # exec 2>&1
+
+# Magisk copies new files when update
+# so skipping applets doesn't work
+rm -rf "$MODPATH/system"
+mv "$MODPATH/updated" "$MODPATH/system"
+
+rm -f "$MODPATH/post-fs-data.sh"
