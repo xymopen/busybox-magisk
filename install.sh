@@ -167,15 +167,19 @@ else
 fi
 
 which_not_busybox() {
+  local appletpath
+  local applet="$1"
   local IFS=':'
 
-  for i in $PATH; do
-    if [ "$i" = "$BBPATH" ]; then
+  for path in $PATH; do
+    if [ "$path" = "$BBPATH" ]; then
       continue
     fi
 
-    if [ -x "$i/$1" ]; then
-      echo "$i/$1"
+    appletpath="$path/$applet"
+
+    if [ -x "$appletpath" ]; then
+      echo "$appletpath"
 
       return 0
     fi
