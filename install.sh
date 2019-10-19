@@ -172,13 +172,13 @@ which_not_busybox() {
   local IFS=':'
 
   for path in $PATH; do
-    if [ "$path" = "$BBPATH" ]; then
-      continue
-    fi
-
     appletpath="$path/$applet"
 
-    if [ -x "$appletpath" ]; then
+    # Exclude previous installed applets
+    if [                                                  \
+      -x "$appletpath" -a                                 \
+      "$(realpath "$appletpath")" != "$(realpath "$BB")"  \
+    ]; then
       echo "$appletpath"
 
       return 0
