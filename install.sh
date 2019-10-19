@@ -31,7 +31,7 @@ PROPFILE=false
 POSTFSDATA=false
 
 # Set to true if you need late_start service script
-LATESTARTSERVICE=false
+LATESTARTSERVICE=true
 
 ##########################################################################################
 # Replace list
@@ -192,7 +192,7 @@ ln_bb() {
   local applet="$1"
   local applet_path="$MODPATH/system/$BIN/$applet"
 
-  ln -s "$BB" "$applet_path"
+  ln -s "/data/local/tmp/busybox" "$applet_path"
 
   chmod -f 755 "$applet_path"
   chown -fh 0 "$applet_path"

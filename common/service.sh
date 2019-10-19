@@ -7,3 +7,7 @@
 MODPATH=${0%/*}
 
 # This script will be executed in late_start service mode
+
+# Symlink busybox to a known place so
+# the module could work across updates
+ln -s "$(which busybox)" "/data/local/tmp/busybox"
