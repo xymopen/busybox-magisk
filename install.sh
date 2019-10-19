@@ -28,7 +28,7 @@ SKIPMOUNT=false
 PROPFILE=false
 
 # Set to true if you need post-fs-data script
-POSTFSDATA=true
+POSTFSDATA=false
 
 # Set to true if you need late_start service script
 LATESTARTSERVICE=false
@@ -120,9 +120,17 @@ print_modname() {
 
 on_install() {
   # Extend/change the logic to whatever you want
-  ui_print "- Unflagging installed"
-  touch "$MODPATH/bb.txt"
-  touch "$MODPATH/applets.txt"
+
+  rm -rf "$MODPATH/system/$BIN"
+  mkdir -p "$MODPATH/system/$BIN"
+
+  ln_bb 'busybox'
+
+  for applet in $("$BB" --list); do
+    if ! which_not_busybox "$applet" > /dev/null; then
+      ln_bb "$applet"
+    fi
+  done
 }
 
 # Only some special files require specific permissions
@@ -141,3 +149,48 @@ set_permissions() {
 }
 
 # You can add more functions to assist your custom script code
+
+BB="$(which busybox)"
+BBPATH="$(dirname "$BB")"
+
+# Follow [busybox-ndk](https://github.com/Magisk-Modules-Repo/busybox-ndk
+# "Magisk-Modules-Repo/busybox-ndk: busybox-ndk")
+if [ -d "/system/xbin" ]; then
+  BIN="xbin"
+else
+  BIN="bin"
+fi
+
+which_not_busybox() {
+  local IFS=':'
+
+  for i in $PATH; do
+    if [ "$i" = "$BBPATH" ]; then
+      continue
+    fi
+
+    if [ -x "$i/$1" ]; then
+      echo "$i/$1"
+
+      return 0
+    fi
+  done
+
+  return 1
+}
+
+ln_bb() {
+  # Some devices don't have directories like /system/sbin and
+  # let Magisk "magic mount" them may cause stuck on boot
+  # So we install applets to /system/(x)bin
+
+  local applet="$1"
+  local applet_path="$MODPATH/system/$BIN/$applet"
+
+  ln -s "$BB" "$applet_path"
+
+  chmod -f 755 "$applet_path"
+  chown -fh 0 "$applet_path"
+  chgrp -fh 0 "$applet_path"
+  chcon -h 'u:object_r:system_file:s0' "$applet_path"
+}
