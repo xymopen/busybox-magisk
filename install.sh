@@ -120,7 +120,9 @@ print_modname() {
 
 on_install() {
   # Extend/change the logic to whatever you want
+  local installed=""
 
+  ui_print "- Installing applets to /system/$BIN"
   rm -rf "$MODPATH/system/$BIN"
   mkdir -p "$MODPATH/system/$BIN"
 
@@ -128,9 +130,12 @@ on_install() {
 
   for applet in $("$BB" --list); do
     if ! which_not_busybox "$applet" > /dev/null; then
+      installed="$installed $applet"
       ln_bb "$applet"
     fi
   done
+
+  ui_print "- Applets installed:$installed"
 }
 
 # Only some special files require specific permissions
