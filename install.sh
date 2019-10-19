@@ -120,16 +120,24 @@ print_modname() {
 
 on_install() {
   # Extend/change the logic to whatever you want
+  local found
   local installed=""
+  local applets="busybox $(busybox --list)"
 
   ui_print "- Installing applets to /system/$BIN"
-  rm -rf "$MODPATH/system/$BIN"
   mkdir -p "$MODPATH/system/$BIN"
 
-  ln_bb 'busybox'
+  for applet in $applets; do
+    if grep -qse "^\-${applet}$" "$CONFIGFILE"; then
+      ui_print "- Skip $applet for -$applet"
+    elif grep -qse "^\+${applet}$" "$CONFIGFILE"; then
+      ui_print "- Force install $applet for +$applet"
 
-  for applet in $("$BB" --list); do
-    if ! which_not_busybox "$applet" > /dev/null; then
+      installed="$installed $applet"
+      ln_bb "$applet"
+    elif found="$(which_not_busybox "$applet")"; then
+      ui_print "- Skip $applet for $found"
+    else
       installed="$installed $applet"
       ln_bb "$applet"
     fi
@@ -154,6 +162,8 @@ set_permissions() {
 }
 
 # You can add more functions to assist your custom script code
+
+CONFIGFILE="/sdcard/busybox-magisk.conf"
 
 BB="$(which busybox)"
 BBPATH="$(dirname "$BB")"
