@@ -31,7 +31,7 @@ PROPFILE=false
 POSTFSDATA=true
 
 # Set to true if you need late_start service script
-LATESTARTSERVICE=true
+LATESTARTSERVICE=false
 
 ##########################################################################################
 # Replace list
@@ -167,7 +167,12 @@ set_permissions() {
 
 CONFIGFILE="/sdcard/busybox-magisk.conf"
 
-BB="$(which busybox)"
+# busybox's location wasn't changed since 18.1
+# and is documented at [Internal Details](
+# https://github.com/topjohnwu/Magisk/blob/master/docs/details.md#paths-in-sbin-tmpfs-overlay
+# "Magisk/details.md at master · topjohnwu/Magisk")
+# So we believe it is stable
+BB="/sbin/.magisk/busybox/busybox"
 BBPATH="$(dirname "$BB")"
 
 # Follow [busybox-ndk](https://github.com/Magisk-Modules-Repo/busybox-ndk
@@ -208,7 +213,7 @@ ln_bb() {
   local applet="$1"
   local applet_path="$MODPATH/updated/$BIN/$applet"
 
-  ln -s "/data/local/tmp/busybox" "$applet_path"
+  ln -s "$BB" "$applet_path"
 
   chmod -f 755 "$applet_path"
   chown -fh 0 "$applet_path"
