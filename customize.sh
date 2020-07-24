@@ -23,8 +23,8 @@ on_install() {
 
   ui_print "- Installing applets to /system/$BIN"
   # Delete previous pending update
-  rm -rf "$MODPATH/updated/$BIN"
-  mkdir -p "$MODPATH/updated/$BIN"
+  rm -rf "$MODPATH/system.new/$BIN"
+  mkdir -p "$MODPATH/system.new/$BIN"
 
   for applet in $applets; do
     if grep -qse "^\-${applet}$" "$CONFIGFILE"; then
@@ -73,7 +73,7 @@ ln_bb() {
   # So we install applets to /system/(x)bin
 
   local applet="$1"
-  local applet_path="$MODPATH/updated/$BIN/$applet"
+  local applet_path="$MODPATH/system.new/$BIN/$applet"
 
   ln -s "$BB" "$applet_path"
 
